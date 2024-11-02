@@ -34,7 +34,7 @@ $(BUILD_DIR)/kernel.bin: always
 	$(MAKE) -C $(SRC_DIR)/kernel BUILD_DIR=$(abspath $(BUILD_DIR))
 
 always:
-	mkdir $(BUILD_DIR)
+	mkdir -p $(BUILD_DIR)
 
 clean:
 	$(MAKE) -C $(SRC_DIR)/bootloader BUILD_DIR=$(abspath $(BUILD_DIR)) clean

@@ -6,7 +6,7 @@ BUILD_DIR?=build
 all: $(BUILD_DIR)/bootloader.bin
 
 $(BUILD_DIR)/bootloader.bin:
-	$(ASM) -f boot.asm -o $(BUILD_DIR)/bootloader.bin
+	$(ASM) -f bin boot.asm -o $(BUILD_DIR)/bootloader.bin
 
 clean:
 	rm -f $(BUILD_DIR)/bootloader.bin
