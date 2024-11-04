@@ -1,1 +1,4 @@
-tty.c(13): Warning! W202: Symbol 'gets_enable' has been defined, but not referenced
+tty.c(68): Warning! W112: Parameter 1: Pointer truncated
+tty.c(68): Note! I2003: source conversion type is 'char __far *'
+tty.c(68): Note! I2004: target conversion type is 'char const *'
+tty.c(15): Warning! W202: Symbol 'gets_enable' has been defined, but not referenced

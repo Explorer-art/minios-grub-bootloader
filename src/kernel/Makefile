@@ -6,7 +6,7 @@ LD16?=/opt/watcom/binl/wlink
 
 BUILD_DIR?=build
 
-SOURCES_C=$(wildcard *.c)
+SOURCES_C=$(wildcard *.c) $(wildcard libc/*.c)
 SOURCES_ASM=$(wildcard *.asm) $(wildcard drivers/*.asm)
 
 OBJECTS_C=$(patsubst %.c, $(BUILD_DIR)/kernel/c/%.obj, $(SOURCES_C))
@@ -27,6 +27,7 @@ $(BUILD_DIR)/kernel/asm/%.obj: %.asm always
 
 always:
 	mkdir -p $(BUILD_DIR)/kernel/c
+	mkdir -p $(BUILD_DIR)/kernel/c/libc
 	mkdir -p $(BUILD_DIR)/kernel/asm
 	mkdir -p $(BUILD_DIR)/kernel/asm/drivers
 

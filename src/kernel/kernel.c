@@ -6,8 +6,6 @@ void _cdecl kmain() {
 	// Инициализация терминала
 	terminal_initialize();
 
-	// Терминал
+	// Передача управления терминалу
 	terminal_loop();
-
-	for (;;);
 }

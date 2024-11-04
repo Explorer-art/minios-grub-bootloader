@@ -137,6 +137,10 @@ void _cdecl printf(const char* fmt, ...) {
 				case '%':
 					state = PRINTF_STATE_LENGTH;
 					break;
+				case '\n':
+					putchar('\n');
+					putchar('\r');
+					break;
 				default:
 					putchar(*fmt);
 					break;

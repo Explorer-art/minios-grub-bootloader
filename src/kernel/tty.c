@@ -4,6 +4,7 @@
 #include <memory.h>
 #include <memdefs.h>
 #include <string.h>
+#include <utils.h>
 #include <kernel/io.h>
 
 #define BUFFER_SIZE 1024
@@ -15,7 +16,7 @@ static bool gets_enable = false;
 static char buffer[BUFFER_SIZE];
 
 void terminal_buffer_clear() {
-	memset(buffer, 0, BUFFER_SIZE);
+	memset(buffer, '\0', BUFFER_SIZE);
 }
 
 char terminal_getchar() {
@@ -33,6 +34,7 @@ char* terminal_gets() {
 
 		if (c == ENTER || i >= BUFFER_SIZE) {
 			write_char('\n', 0);
+			write_char('\r', 0);
 			break;
 		} else if (c == BACKSPACE) {
 			if (i > 0) {
@@ -54,13 +56,20 @@ char* terminal_gets() {
 
 void terminal_loop() {
 	char* command;
+	char far* arg_1;
 
 	while (true) {
-		printf("\r> ");
+		printf("> ");
 
 		command = terminal_gets();
 
-		printf("\r%s\n", command);
+		arg_1 = (char far*) string_split(command, ' ', 0);
+
+		if (strcmp(arg_1, "help") == 0) {
+			printf("HELP:\n\nhelp\ninfo\necho\n");
+		} else {
+			printf("Unknown command\n");
+		}
 	}
 }
 
