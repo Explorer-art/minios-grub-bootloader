@@ -18,7 +18,7 @@
 const char HexChars[] = "0123456789abcdef";
 
 void putchar(char c) {
-	write_char(c, 0);
+	tty_putchar(c);
 }
 
 void puts(const char* str) {
@@ -231,11 +231,11 @@ void _cdecl printf(const char* fmt, ...) {
 }
 
 char getchar() {
-	return terminal_getchar();
+	return tty_getchar();
 }
 
 char* gets(char* str) {
-	str = terminal_gets();
+	str = tty_gets();
 
 	return str;
 }
