@@ -10,6 +10,11 @@ bool help() {
 	return true;
 }
 
+bool info() {
+	printf("INFO:\n\nSystem: Minio\nVersion: 0.1\nAuthor: Truzme_\n");
+	return true;
+}
+
 bool echo(char* command) {
 	if (strcmp(string_split(command, ' ', 1), command) == 0) {
 		printf("Incorrect command format!\n");
@@ -40,6 +45,8 @@ void terminal_main() {
 
 		if (strcmp(arg_1, "help") == 0) {
 			help();
+		} else if (strcmp(arg_1, "info") == 0) {
+			info();
 		} else if (strcmp(arg_1, "echo") == 0) {
 			echo(command);
 		} else {
