@@ -4,7 +4,7 @@
 #include <kernel/terminal.h>
 
 void _cdecl kmain() {
-	// Инициализация терминала
+	// Инициализация TTY
 	tty_initialize();
 
 	// Передача управления терминалу
