@@ -6,7 +6,7 @@
 #include <utils.h>
 
 bool help() {
-	printf("HELP:\n\nhelp\ninfo\necho\n");
+	printf("HELP:\n\nhelp\ninfo\necho\nclear\n");
 	return true;
 }
 
@@ -32,9 +32,16 @@ bool echo(char* command) {
 	return true;
 }
 
+bool clear() {
+	tty_clear();
+	return true;
+}
+
 void terminal_main() {
 	char* command;
 	char far* arg_1;
+
+	printf("Welcome to Minio!\n\n");
 
 	while (true) {
 		printf("> ");
@@ -49,6 +56,8 @@ void terminal_main() {
 			info();
 		} else if (strcmp(arg_1, "echo") == 0) {
 			echo(command);
+		} else if (strcmp(arg_1, "clear") == 0) {
+			clear();
 		} else {
 			printf("Unknown command\n");
 		}

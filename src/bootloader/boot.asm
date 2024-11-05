@@ -124,7 +124,7 @@ start:
     jl .search_kernel
 
     ; kernel not found
-    jmp msg_kernel_not_found
+    jmp kernel_not_found_error
 
 .found_kernel:
     ; di should have the address to the entry

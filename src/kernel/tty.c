@@ -7,8 +7,12 @@
 static bool gets_enable = false;
 static char buffer[BUFFER_SIZE];
 
+void tty_clear() {
+	clear_screen();
+}
+
 void tty_putchar(char c) {
-	write_char(c, 0);
+	write_char(c);
 }
 
 char tty_getchar() {
@@ -29,19 +33,19 @@ char* tty_gets() {
 		c = tty_getchar();
 
 		if (c == ENTER || i >= BUFFER_SIZE) {
-			write_char('\n', 0);
-			write_char('\r', 0);
+			tty_putchar('\n');
+			tty_putchar('\r');
 			break;
 		} else if (c == BACKSPACE) {
 			if (i > 0) {
-				write_char(BACKSPACE, 0);
-				write_char(SPACE, 0);
-				write_char(BACKSPACE, 0);
+				tty_putchar(BACKSPACE);
+				tty_putchar(SPACE);
+				tty_putchar(BACKSPACE);
 				i--;
 				buffer[i] = '\0';
 			}
 		} else {
-			write_char(c, 0);
+			write_char(c);
 			buffer[i] = c;
 			i++;
 		}
@@ -51,5 +55,6 @@ char* tty_gets() {
 }
 
 void tty_initialize() {
+	tty_clear();
 	tty_buffer_clear();
 }

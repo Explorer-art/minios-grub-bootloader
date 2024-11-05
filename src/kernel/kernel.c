@@ -9,4 +9,6 @@ void _cdecl kmain() {
 
 	// Передача управления терминалу
 	terminal_main();
+
+	for(;;);
 }
