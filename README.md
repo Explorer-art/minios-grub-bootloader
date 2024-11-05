@@ -1,2 +1,2 @@
-# minios-v2.0
- Minios v2.0
+# Minio
+Minio - simple operating system running in real mode.
