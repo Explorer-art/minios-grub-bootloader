@@ -2,9 +2,65 @@ bits 16
 
 section _TEXT class=CODE
 
+global __U4D
 global _disk_reset
 global _disk_read
 global _disk_get_params
+
+;
+; U4D
+;
+; Operation:      Unsigned 4 byte divide
+; Inputs:         DX;AX   Dividend
+;                 CX;BX   Divisor
+; Outputs:        DX;AX   Quotient
+;                 CX;BX   Remainder
+; Volatile:       none
+;
+
+__U4D:
+    shl edx, 16         ; dx to upper half of edx
+    mov dx, ax          ; edx - dividend
+    mov eax, edx        ; eax - dividend
+    xor edx, edx
+
+    shl ecx, 16         ; cx to upper half of ecx
+    mov cx, bx          ; ecx - divisor
+
+    div ecx             ; eax - quot, edx - remainder
+    mov ebx, edx
+    mov ecx, edx
+    shr ecx, 16
+
+    mov edx, eax
+    shr edx, 16
+
+    ret
+
+
+;
+; U4M
+; Operation:      integer four byte multiply
+; Inputs:         DX;AX   integer M1
+;                 CX;BX   integer M2
+; Outputs:        DX;AX   product
+; Volatile:       CX, BX destroyed
+;
+
+global __U4M
+__U4M:
+    shl edx, 16         ; dx to upper half of edx
+    mov dx, ax          ; m1 in edx
+    mov eax, edx        ; m1 in eax
+
+    shl ecx, 16         ; cx to upper half of ecx
+    mov cx, bx          ; m2 in ecx
+
+    mul ecx             ; result in edx:eax (we only need eax)
+    mov edx, eax        ; move upper half to dx
+    shr edx, 16
+
+    ret
 
 ;bool _cdecl disk_reset(uint8_t drive);
 

@@ -5,7 +5,6 @@ section _TEXT class=CODE
 global _clear_screen
 global _write_char
 global _read_char
-global __U4D
 global _div64_32
 
 _clear_screen:
@@ -56,36 +55,6 @@ _read_char:
 
     mov sp, bp
     pop bp
-    ret
-
-;
-; U4D
-;
-; Operation:      Unsigned 4 byte divide
-; Inputs:         DX;AX   Dividend
-;                 CX;BX   Divisor
-; Outputs:        DX;AX   Quotient
-;                 CX;BX   Remainder
-; Volatile:       none
-;
-
-__U4D:
-    shl edx, 16         ; dx to upper half of edx
-    mov dx, ax          ; edx - dividend
-    mov eax, edx        ; eax - dividend
-    xor edx, edx
-
-    shl ecx, 16         ; cx to upper half of ecx
-    mov cx, bx          ; ecx - divisor
-
-    div ecx             ; eax - quot, edx - remainder
-    mov ebx, edx
-    mov ecx, edx
-    shr ecx, 16
-
-    mov edx, eax
-    shr edx, 16
-
     ret
 
 _div64_32:
