@@ -7,7 +7,9 @@ BUILD_DIR?=build
 
 OBJECTS=\
 $(BUILD_DIR)/boot/boot.o \
+$(BUILD_DIR)/kernel/drivers/gdt.o \
 $(BUILD_DIR)/kernel/kernel.o \
+$(BUILD_DIR)/kernel/gdt.o \
 $(BUILD_DIR)/kernel/tty.o \
 $(BUILD_DIR)/libc/string.o \
 
@@ -38,6 +40,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 always:
 	mkdir -p $(BUILD_DIR)/boot
 	mkdir -p $(BUILD_DIR)/kernel
+	mkdir -p $(BUILD_DIR)/kernel/drivers
 	mkdir -p $(BUILD_DIR)/libc
 
 clean:

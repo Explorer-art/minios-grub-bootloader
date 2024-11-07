@@ -1,7 +1,9 @@
+#include <kernel/gdt.h>
 #include <kernel/tty.h>
 
 void kmain() {
-	terminal_initialize();
+	GDT_init();
+	terminal_init();
 
 	terminal_writestring("Hello World!");
 
