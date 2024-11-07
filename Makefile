@@ -12,6 +12,7 @@ $(BUILD_DIR)/kernel/kernel.o \
 $(BUILD_DIR)/kernel/gdt.o \
 $(BUILD_DIR)/kernel/tty.o \
 $(BUILD_DIR)/libc/string.o \
+$(BUILD_DIR)/libc/memory.o \
 
 PHONY: all clean always
 

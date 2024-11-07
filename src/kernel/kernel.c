@@ -2,7 +2,7 @@
 #include <kernel/tty.h>
 
 void kmain() {
-	GDT_init();
+	gdt_init();
 	terminal_init();
 
 	terminal_writestring("Hello World!");
