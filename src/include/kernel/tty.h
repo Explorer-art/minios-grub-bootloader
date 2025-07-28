@@ -1,13 +1,18 @@
-#ifndef KERNEL_TTY_H
-#define KERNEL_TTY_H
+#ifndef TTY_H
+#define TTY_H
 
-#include <stddef.h>
+#include <stdint.h>
 
-void terminal_init(void);
-void terminal_clear(void);
-void terminal_new_line(void);
-void terminal_putchar(char c);
-void terminal_write(const char* str, size_t size);
-void terminal_writestring(const char* str);
+#define VGA_WIDTH 80
+#define VGA_HEIGHT 25
+
+void tty_init(void);
+void tty_setcolor(uint8_t color);
+void tty_disable_cursor(void);
+uint16_t tty_get_cursor_pos(void);
+void tty_enable_cursor(uint8_t cursor_start, uint8_t cursor_end);
+void tty_clear(void);
+void tty_putchar(char c);
+void tty_puts(const char* str);
 
 #endif

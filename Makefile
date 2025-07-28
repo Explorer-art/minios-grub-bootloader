@@ -8,28 +8,36 @@ BUILD_DIR?=build
 OBJECTS=\
 $(BUILD_DIR)/boot/boot.o \
 $(BUILD_DIR)/kernel/drivers/gdt.o \
+$(BUILD_DIR)/kernel/drivers/idt.o \
+$(BUILD_DIR)/kernel/drivers/isr.o \
+$(BUILD_DIR)/kernel/drivers/port.o \
 $(BUILD_DIR)/kernel/kernel.o \
 $(BUILD_DIR)/kernel/gdt.o \
+$(BUILD_DIR)/kernel/idt.o \
+$(BUILD_DIR)/kernel/isr.o \
+$(BUILD_DIR)/kernel/pic.o \
 $(BUILD_DIR)/kernel/tty.o \
+$(BUILD_DIR)/kernel/console.o \
+$(BUILD_DIR)/kernel/panic.o \
 $(BUILD_DIR)/libc/string.o \
 $(BUILD_DIR)/libc/memory.o \
 
 PHONY: all clean always
 
-all: clean always minio.iso
+all: clean always minios.iso
 
-minio.iso: $(BUILD_DIR)/minio.iso
+minios.iso: $(BUILD_DIR)/minios.iso
 
-$(BUILD_DIR)/minio.iso: minio.bin
+$(BUILD_DIR)/minios.iso: minios.bin
 	mkdir -p isodir/boot
 	mkdir -p isodir/boot/grub
-	cp $(BUILD_DIR)/minio.bin isodir/boot/minio.bin
+	cp $(BUILD_DIR)/minios.bin isodir/boot/minios.bin
 	cp grub.cfg isodir/boot/grub/grub.cfg
-	grub-mkrescue -o $(BUILD_DIR)/minio.iso isodir
+	grub-mkrescue -o $(BUILD_DIR)/minios.iso isodir
 
-minio.bin: $(BUILD_DIR)/minio.bin
+minios.bin: $(BUILD_DIR)/minios.bin
 
-$(BUILD_DIR)/minio.bin: $(OBJECTS)
+$(BUILD_DIR)/minios.bin: $(OBJECTS)
 	$(LD) -m elf_i386 -T $(SRC_DIR)/linker.ld -o $@ $(OBJECTS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.s

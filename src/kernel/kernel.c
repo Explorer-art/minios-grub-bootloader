@@ -1,11 +1,15 @@
 #include <kernel/gdt.h>
-#include <kernel/tty.h>
+#include <kernel/idt.h>
+#include <kernel/pic.h>
+#include <kernel/console.h>
 
 void kmain() {
+	tty_init();
 	gdt_init();
-	terminal_init();
+	idt_init();
+    pic_remap();
 
-	terminal_writestring("Hello World!");
+    kprintf("Hello world from kernel!");
 
 	for(;;);
 }
