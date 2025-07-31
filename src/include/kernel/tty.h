@@ -8,9 +8,9 @@
 
 void tty_init(void);
 void tty_setcolor(uint8_t color);
-void tty_disable_cursor(void);
+void tty_cursor_enable(uint8_t cursor_start, uint8_t cursor_end);
+void tty_cursor_disable(void);
 uint16_t tty_get_cursor_pos(void);
-void tty_enable_cursor(uint8_t cursor_start, uint8_t cursor_end);
 void tty_clear(void);
 void tty_putchar(char c);
 void tty_puts(const char* str);

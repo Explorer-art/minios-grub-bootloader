@@ -21,5 +21,6 @@ typedef struct {
 void idt_init(void);
 
 extern void isr0();
+extern void irq1();
 
 #endif

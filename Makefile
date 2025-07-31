@@ -5,19 +5,19 @@ CFLAGS=-m32 -ffreestanding -fno-stack-protector -fno-builtin -Wall -Wextra -I sr
 SRC_DIR?=src
 BUILD_DIR?=build
 
-OBJECTS=\
+OBJECTS= \
 $(BUILD_DIR)/boot/boot.o \
-$(BUILD_DIR)/kernel/drivers/gdt.o \
-$(BUILD_DIR)/kernel/drivers/idt.o \
-$(BUILD_DIR)/kernel/drivers/isr.o \
+$(BUILD_DIR)/kernel/cpu/gdt.o \
+$(BUILD_DIR)/kernel/cpu/gdt_flush.o \
+$(BUILD_DIR)/kernel/cpu/idt.o \
+$(BUILD_DIR)/kernel/cpu/idt_flush.o \
+$(BUILD_DIR)/kernel/cpu/irq.o \
 $(BUILD_DIR)/kernel/drivers/port.o \
+$(BUILD_DIR)/kernel/drivers/tty.o \
+$(BUILD_DIR)/kernel/drivers/keyboard.o \
 $(BUILD_DIR)/kernel/kernel.o \
-$(BUILD_DIR)/kernel/gdt.o \
-$(BUILD_DIR)/kernel/idt.o \
-$(BUILD_DIR)/kernel/isr.o \
-$(BUILD_DIR)/kernel/pic.o \
-$(BUILD_DIR)/kernel/tty.o \
 $(BUILD_DIR)/kernel/console.o \
+$(BUILD_DIR)/kernel/pic.o \
 $(BUILD_DIR)/kernel/panic.o \
 $(BUILD_DIR)/libc/string.o \
 $(BUILD_DIR)/libc/memory.o \
@@ -38,7 +38,7 @@ $(BUILD_DIR)/minios.iso: minios.bin
 minios.bin: $(BUILD_DIR)/minios.bin
 
 $(BUILD_DIR)/minios.bin: $(OBJECTS)
-	$(LD) -m elf_i386 -T $(SRC_DIR)/linker.ld -o $@ $(OBJECTS)
+	$(LD) -m elf_i386 -T linker.ld -o $@ $(OBJECTS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.s
 	$(ASM) -f elf32 $< -o $@
@@ -49,6 +49,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 always:
 	mkdir -p $(BUILD_DIR)/boot
 	mkdir -p $(BUILD_DIR)/kernel
+	mkdir -p $(BUILD_DIR)/kernel/cpu
 	mkdir -p $(BUILD_DIR)/kernel/drivers
 	mkdir -p $(BUILD_DIR)/libc
 
