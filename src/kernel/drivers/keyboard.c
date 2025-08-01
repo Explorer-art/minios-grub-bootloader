@@ -1,5 +1,5 @@
 #include <kernel/drivers/keyboard.h>
-#include <kernel/irq.h>
+#include <kernel/cpu/irq.h>
 #include <kernel/port.h>
 #include <kernel/drivers/tty.h>
 #include <kernel/console.h>

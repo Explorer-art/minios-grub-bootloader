@@ -1,4 +1,4 @@
-#include <kernel/irq.h>
+#include <kernel/cpu/irq.h>
 #include <kernel/console.h>
 #include <kernel/port.h>
 #include <kernel/panic.h>

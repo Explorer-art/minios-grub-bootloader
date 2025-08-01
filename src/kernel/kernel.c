@@ -1,5 +1,5 @@
-#include <kernel/gdt.h>
-#include <kernel/idt.h>
+#include <kernel/cpu/gdt.h>
+#include <kernel/cpu/idt.h>
 #include <kernel/pic.h>
 #include <kernel/drivers/tty.h>
 #include <kernel/drivers/keyboard.h>
@@ -16,8 +16,6 @@ void kmain() {
     __asm__ volatile ("sti");
 
     kprintf("Hello world from kernel!\n");
-
-    kprintf("> %s\n", kgets());
 
 	for(;;);
 }

@@ -19,6 +19,7 @@ $(BUILD_DIR)/kernel/kernel.o \
 $(BUILD_DIR)/kernel/console.o \
 $(BUILD_DIR)/kernel/pic.o \
 $(BUILD_DIR)/kernel/panic.o \
+$(BUILD_DIR)/kernel/syscalls.o \
 $(BUILD_DIR)/libc/string.o \
 $(BUILD_DIR)/libc/memory.o \
 

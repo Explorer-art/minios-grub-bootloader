@@ -1,6 +1,6 @@
-#include <kernel/idt.h>
+#include <kernel/cpu/idt.h>
 #include <kernel/port.h>
-#include <kernel/irq.h>
+#include <kernel/cpu/irq.h>
 #include <memory.h>
 
 // extern void keyboard_handler(void);
@@ -75,7 +75,6 @@ void idt_init(void) {
 	idt_set_gate(47, (uint32_t)irq15, 0x08, 0x8E);
 
 	idt_set_gate(128, (uint32_t)isr128, 0x08, 0x8E);
-	idt_set_gate(177, (uint32_t)isr177, 0x08, 0x8E);
 
 	idt_flush((uint32_t)&idt_ptr);
 }

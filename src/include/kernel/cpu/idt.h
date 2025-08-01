@@ -22,5 +22,6 @@ void idt_init(void);
 
 extern void isr0();
 extern void irq1();
+extern void isr128();
 
 #endif

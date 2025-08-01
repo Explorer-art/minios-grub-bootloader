@@ -1,4 +1,4 @@
-#include <kernel/gdt.h>
+#include <kernel/cpu/gdt.h>
 #include <memory.h>
 
 extern void gdt_flush(uint32_t addr);
