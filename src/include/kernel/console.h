@@ -1,7 +1,7 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include <kernel/tty.h>
+#include <stdint.h>
 
 #define PRINTF_STATE_NORMAL 0
 #define PRINTF_STATE_LENGTH 1
@@ -16,5 +16,7 @@
 #define PRINTF_LENGTH_LONG_LONG 4
 
 void kprintf(const char* fmt, ...);
+uint8_t kgetchar(void);
+uint8_t* kgets(void);
 
 #endif

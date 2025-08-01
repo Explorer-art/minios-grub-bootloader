@@ -1,5 +1,6 @@
 #include <kernel/console.h>
-#include <kernel/tty.h>
+#include <kernel/drivers/tty.h>
+#include <kernel/drivers/keyboard.h>
 #include <stdbool.h>
 
 static const char hex_chars[] = "0123456789abcdef";
@@ -216,4 +217,30 @@ void kprintf(const char* fmt, ...) {
 
 		fmt++;
 	}
+}
+
+uint8_t kgetchar(void) {
+	tty_cursor_enable(14, 15);
+	uint8_t c = keyboard_getchar();
+	tty_cursor_disable();
+
+	return c;
+}
+
+uint8_t* kgets() {
+	int i = 0;
+	uint8_t c;
+	static uint8_t buffer[KEYBOARD_BUFFER_SIZE] = {0};
+
+	tty_cursor_enable(14, 15);
+
+	while ((c = keyboard_getchar()) != '\n') {
+		buffer[i++] = c;
+	}
+
+	tty_cursor_disable();
+
+	buffer[i] = '\0';
+
+	return buffer;
 }

@@ -1,7 +1,7 @@
 #include <kernel/drivers/keyboard.h>
 #include <kernel/irq.h>
-#include <kernel/tty.h>
 #include <kernel/port.h>
+#include <kernel/drivers/tty.h>
 #include <kernel/console.h>
 
 /* The following array is taken from 
@@ -133,13 +133,9 @@ void keyboard_handler(registers_t* regs) {
 }
 
 uint8_t keyboard_getchar(void) {
-    tty_cursor_enable(14, 15);
-
     while (read_index == write_index) {
         // Wait key pressed...
     }
-
-    tty_cursor_disable();
 
     uint8_t c = keyboard_buffer[read_index];
     read_index = (read_index + 1) & (KEYBOARD_BUFFER_SIZE - 1);

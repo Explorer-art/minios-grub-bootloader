@@ -1,4 +1,4 @@
-#include <kernel/tty.h>
+#include <kernel/drivers/tty.h>
 #include <kernel/vga.h>
 #include <kernel/port.h>
 #include <stdbool.h>
@@ -29,7 +29,7 @@ void tty_cursor_disable(void) {
 	write_port(0x3D5, 0x20);
 }
 
-uint16_t tty_get_cursor_pos(void) {
+uint16_t tty_cursor_get_pos(void) {
 	uint16_t pos = 0;
 
 	write_port(0x3D4, 0x0F);
@@ -40,7 +40,7 @@ uint16_t tty_get_cursor_pos(void) {
 	return pos;
 }
 
-void tty_update_cursor(uint8_t x, uint8_t y) {
+void tty_cursor_update(uint8_t x, uint8_t y) {
 	uint16_t pos = y * VGA_WIDTH + x;
 
 	write_port(0x3D4, 0x0F);
@@ -68,7 +68,7 @@ void tty_init(void) {
 void tty_putentryat(unsigned char c, uint8_t color, size_t x, size_t y) {
 	const size_t index = y * VGA_WIDTH + x;
 	terminal_buffer[index] = vga_entry(c, color);
-	tty_update_cursor(x + 1, y);
+	tty_cursor_update(x + 1, y);
 }
 
 void tty_clear(void) {
@@ -106,6 +106,8 @@ void tty_new_line() {
 		terminal_row = VGA_HEIGHT - 1;
 		tty_scroll(1);
 	}
+
+	tty_cursor_update(terminal_column, terminal_row);
 }
 
 void tty_putchar(char c) {
