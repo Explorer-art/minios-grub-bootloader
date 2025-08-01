@@ -4,17 +4,17 @@
 #include <kernel/console.h>
 
 /*
-Modes:
-Sigle mode (ECX = 0). Reads one byte per system call.
-Multiple mode (ECX = 1). It can read several bytes at once.
-
 Read syscall
 Parameters:
-- ebx: destination
+- ebx: source
 - ecx: mode
 
 Output:
 - ax: unsigned char
+
+Modes:
+Sigle mode (ECX = 0). Reads one byte per system call.
+Block mode (ECX = 1). It can read several bytes at once.
 */
 
 uint8_t read_syscall(registers_t* regs) {
@@ -30,8 +30,8 @@ uint8_t read_syscall(registers_t* regs) {
 /*
 Write syscall
 Parameters:
-- ebx: source
-- ecx: unsigned char
+- ebx: destination
+- ecx: source (byte or pointer)
 - edx: mode
 
 Output:
