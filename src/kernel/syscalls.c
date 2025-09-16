@@ -50,7 +50,7 @@ uint8_t write_syscall(registers_t* regs) {
 
 	if (regs->ebx == 1 && mode == 0)
 		tty_putchar(regs->ecx);
-	else if (regs->edx == 1 && mode == 1)
+	else if (regs->ebx == 1 && mode == 1)
 		tty_puts((const char*)regs->ecx);
 	else
 		return 1;

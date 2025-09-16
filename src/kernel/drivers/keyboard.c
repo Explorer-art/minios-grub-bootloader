@@ -133,6 +133,7 @@ void keyboard_handler(registers_t* regs) {
 }
 
 uint8_t keyboard_getchar(void) {
+    __asm__ volatile ("sti");
     while (read_index == write_index) {
         // Wait key pressed...
     }
@@ -141,6 +142,8 @@ uint8_t keyboard_getchar(void) {
     read_index = (read_index + 1) & (KEYBOARD_BUFFER_SIZE - 1);
 
     tty_putchar(c);
+
+    __asm__ volatile ("cli");
 
     return c;
 }

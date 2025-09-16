@@ -5,6 +5,9 @@
 #include <kernel/drivers/keyboard.h>
 #include <kernel/console.h>
 
+extern void sctest_write(void);
+extern void sctest_read(void);
+
 void kmain() {
 	tty_init();
 	gdt_init();
@@ -15,7 +18,7 @@ void kmain() {
 
     __asm__ volatile ("sti");
 
-    kprintf("Hello world from kernel!\n");
+    sctest_read();
 
 	for(;;);
 }
