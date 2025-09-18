@@ -12,13 +12,14 @@ $(BUILD_DIR)/kernel/cpu/gdt_flush.o \
 $(BUILD_DIR)/kernel/cpu/idt.o \
 $(BUILD_DIR)/kernel/cpu/idt_flush.o \
 $(BUILD_DIR)/kernel/cpu/irq.o \
-$(BUILD_DIR)/kernel/port.o \
+$(BUILD_DIR)/kernel/cpu/port.o \
+$(BUILD_DIR)/kernel/cpu/pic.o \
+$(BUILD_DIR)/kernel/drivers/ata.o \
 $(BUILD_DIR)/kernel/drivers/tty.o \
 $(BUILD_DIR)/kernel/drivers/keyboard.o \
 $(BUILD_DIR)/kernel/sctest.o \
 $(BUILD_DIR)/kernel/kernel.o \
 $(BUILD_DIR)/kernel/console.o \
-$(BUILD_DIR)/kernel/pic.o \
 $(BUILD_DIR)/kernel/panic.o \
 $(BUILD_DIR)/kernel/syscalls.o \
 $(BUILD_DIR)/libc/string.o \

@@ -1,6 +1,6 @@
 #include <kernel/cpu/irq.h>
+#include <kernel/cpu/port.h>
 #include <kernel/console.h>
-#include <kernel/port.h>
 #include <kernel/panic.h>
 
 static const char* exception_messages[] = {
@@ -64,7 +64,7 @@ void irq_handler(registers_t* regs) {
 		handler(regs);
 
 	if (regs->int_no >= 40)
-		write_port(0xA0, 0x20);
+		outb(0xA0, 0x20);
 
-	write_port(0x20, 0x20);
+	outb(0x20, 0x20);
 }

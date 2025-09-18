@@ -1,3 +1,7 @@
+;
+; Syscall test
+;
+
 global sctest_write
 global sctest_read
 

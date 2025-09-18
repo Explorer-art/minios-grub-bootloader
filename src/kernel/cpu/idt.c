@@ -1,6 +1,6 @@
 #include <kernel/cpu/idt.h>
-#include <kernel/port.h>
 #include <kernel/cpu/irq.h>
+#include <kernel/cpu/port.h>
 #include <memory.h>
 
 // extern void keyboard_handler(void);

@@ -1,6 +1,6 @@
 #include <kernel/drivers/keyboard.h>
 #include <kernel/cpu/irq.h>
-#include <kernel/port.h>
+#include <kernel/cpu/port.h>
 #include <kernel/drivers/tty.h>
 #include <kernel/console.h>
 
@@ -94,13 +94,13 @@ static uint8_t write_index = 0;
 static uint8_t read_index = 0;
 
 void keyboard_handler(registers_t* regs) {
-	uint8_t status = read_port(0x64);
+	uint8_t status = inb(0x64);
 
     /* Нижний бит статуса будет выставлен, если буфер не пуст */
     if (!(status & 0x01))
         return;
 
-    uint8_t keycode = read_port(0x60);
+    uint8_t keycode = inb(0x60);
     uint8_t release = keycode & 0x80;
     uint8_t key = keycode & 0x7F;
 

@@ -1,6 +1,6 @@
 #include <kernel/drivers/tty.h>
 #include <kernel/vga.h>
-#include <kernel/port.h>
+#include <kernel/cpu/port.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
@@ -17,25 +17,25 @@ void tty_setcolor(uint8_t color) {
 }
 
 void tty_cursor_enable(uint8_t cursor_start, uint8_t cursor_end) {
-	write_port(0x3D4, 0x0A);
-	write_port(0x3D5, (read_port(0x3D5) & 0xC0) | cursor_start);
+	outb(0x3D4, 0x0A);
+	outb(0x3D5, (inb(0x3D5) & 0xC0) | cursor_start);
 
-	write_port(0x3D4, 0x0B);
-	write_port(0x3D5, (read_port(0x3D5) & 0xE0) | cursor_end);
+	outb(0x3D4, 0x0B);
+	outb(0x3D5, (inb(0x3D5) & 0xE0) | cursor_end);
 }
 
 void tty_cursor_disable(void) {
-	write_port(0x3D4, 0x0A);
-	write_port(0x3D5, 0x20);
+	outb(0x3D4, 0x0A);
+	outb(0x3D5, 0x20);
 }
 
 uint16_t tty_cursor_get_pos(void) {
 	uint16_t pos = 0;
 
-	write_port(0x3D4, 0x0F);
-	pos |= read_port(0x3D5);
-	write_port(0x3D4, 0x0E);
-	pos |= ((uint16_t)read_port(0x3D5)) << 8;
+	outb(0x3D4, 0x0F);
+	pos |= inb(0x3D5);
+	outb(0x3D4, 0x0E);
+	pos |= ((uint16_t)inb(0x3D5)) << 8;
 
 	return pos;
 }
@@ -43,10 +43,10 @@ uint16_t tty_cursor_get_pos(void) {
 void tty_cursor_update(uint8_t x, uint8_t y) {
 	uint16_t pos = y * VGA_WIDTH + x;
 
-	write_port(0x3D4, 0x0F);
-	write_port(0x3D5, (uint8_t)(pos & 0xFF));
-	write_port(0x3D4, 0x0E);
-	write_port(0x3D5, (uint8_t)((pos >> 8) & 0xFF));
+	outb(0x3D4, 0x0F);
+	outb(0x3D5, (uint8_t)(pos & 0xFF));
+	outb(0x3D4, 0x0E);
+	outb(0x3D5, (uint8_t)((pos >> 8) & 0xFF));
 }
 
 void tty_init(void) {

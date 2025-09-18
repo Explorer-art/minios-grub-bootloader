@@ -1,8 +1,9 @@
 #include <kernel/cpu/gdt.h>
 #include <kernel/cpu/idt.h>
-#include <kernel/pic.h>
+#include <kernel/cpu/pic.h>
 #include <kernel/drivers/tty.h>
 #include <kernel/drivers/keyboard.h>
+#include <kernel/drivers/ata.h>
 #include <kernel/console.h>
 
 extern void sctest_write(void);
@@ -13,12 +14,13 @@ void kmain() {
 	gdt_init();
 	idt_init();
     pic_remap(0x20, 0x28);
+    Drives drives = detect_drives();
 
     keyboard_init();
 
     __asm__ volatile ("sti");
 
-    sctest_read();
+    // sctest_read();
 
 	for(;;);
 }
