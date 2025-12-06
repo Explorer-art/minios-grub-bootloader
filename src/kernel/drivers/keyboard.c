@@ -2,9 +2,9 @@
 #include <kernel/cpu/irq.h>
 #include <kernel/cpu/port.h>
 #include <kernel/drivers/tty.h>
-#include <kernel/console.h>
+#include <kernel/utils/kprintf.h>
 
-/* The following array is taken from 
+/* The following array is taken from
     http://www.osdever.net/bkerndev/Docs/keyboard.htm
    All credits where due
 */

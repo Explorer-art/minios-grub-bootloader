@@ -17,11 +17,15 @@ $(BUILD_DIR)/kernel/cpu/pic.o \
 $(BUILD_DIR)/kernel/drivers/ata.o \
 $(BUILD_DIR)/kernel/drivers/tty.o \
 $(BUILD_DIR)/kernel/drivers/keyboard.o \
+$(BUILD_DIR)/kernel/drivers/timer.o \
+$(BUILD_DIR)/kernel/mm/pmm.o \
+$(BUILD_DIR)/kernel/mm/vmm.o \
+$(BUILD_DIR)/kernel/mm/paging.o \
+$(BUILD_DIR)/kernel/utils/kprintf.o \
+$(BUILD_DIR)/kernel/utils/kpanic.o \
 $(BUILD_DIR)/kernel/sctest.o \
 $(BUILD_DIR)/kernel/kernel.o \
-$(BUILD_DIR)/kernel/console.o \
-$(BUILD_DIR)/kernel/panic.o \
-$(BUILD_DIR)/kernel/syscalls.o \
+$(BUILD_DIR)/kernel/syscall.o \
 $(BUILD_DIR)/libc/string.o \
 $(BUILD_DIR)/libc/memory.o \
 
@@ -54,6 +58,8 @@ always:
 	mkdir -p $(BUILD_DIR)/kernel
 	mkdir -p $(BUILD_DIR)/kernel/cpu
 	mkdir -p $(BUILD_DIR)/kernel/drivers
+	mkdir -p $(BUILD_DIR)/kernel/mm
+	mkdir -p $(BUILD_DIR)/kernel/utils
 	mkdir -p $(BUILD_DIR)/libc
 
 clean:

@@ -1,6 +1,6 @@
 #include <kernel/drivers/ata.h>
 #include <kernel/cpu/port.h>
-#include <kernel/console.h>
+#include <kernel/utils/kprintf.h>
 
 static void ata_delay(uint8_t delay) {
 	for (uint8_t i = 0; i < delay; i++) {

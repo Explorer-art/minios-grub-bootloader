@@ -1,7 +1,7 @@
 #include <kernel/cpu/irq.h>
 #include <kernel/cpu/port.h>
-#include <kernel/console.h>
-#include <kernel/panic.h>
+#include <kernel/utils/kprintf.h>
+#include <kernel/utils/kpanic.h>
 
 static const char* exception_messages[] = {
 	"Divide by zero",

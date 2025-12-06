@@ -88,7 +88,7 @@ isr128:
     cli
     push long 0
     push long 128
-    jmp syscalls_common_stub
+    jmp syscall_common_stub
 
 extern isr_handler
 isr_common_stub:
@@ -148,8 +148,8 @@ irq_common_stub:
     sti
     iret
 
-extern syscalls_handler
-syscalls_common_stub:
+extern syscall_handler
+syscall_common_stub:
     pusha
     mov eax, ds
     push eax
@@ -163,7 +163,7 @@ syscalls_common_stub:
     mov gs, ax
 
     push esp
-    call syscalls_handler
+    call syscall_handler
     mov [esp + 32], eax
 
     add esp, 8
