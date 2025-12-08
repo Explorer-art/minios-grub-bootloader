@@ -13,6 +13,8 @@ extern kmain
 start:
 	cli
 	mov esp, stack_space
+	push ebx
+	push eax
 	call kmain
 	hlt
 

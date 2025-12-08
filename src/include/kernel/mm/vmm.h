@@ -15,7 +15,7 @@ typedef struct {
 	uint32_t ignored : 1;
 	uint32_t available : 3;
 	uint32_t page_table_addr : 20;
-} __attribute__((packed)) Page_Directory_Entry;
+} __attribute__((packed)) page_directory_t;
 
 typedef struct {
 	uint32_t present : 1;
@@ -29,8 +29,10 @@ typedef struct {
 	uint32_t global : 1;
 	uint32_t available : 3;
 	uint32_t page_phys_addr : 20;
-} __attribute__((packed)) Page_Table_Entry;
+} __attribute__((packed)) page_table_t;
 
 void vmm_init(void);
+page_directory_t* vmm_create_user_page_directory(void);
+void vmm_destroy_user_page_directory(page_directory_t* page);
 
 #endif

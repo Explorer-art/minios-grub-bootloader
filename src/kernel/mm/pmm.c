@@ -1,8 +1,15 @@
 #include <kernel/mm/pmm.h>
 #include <kernel/utils/kpanic.h>
 #include <stddef.h>
+#include <memory.h>
 
-uint32_t bitmap[PAGES_COUNT / 32];
+static uint32_t pmm_start_addr;
+static uint32_t bitmap[PAGES_COUNT / 32];
+
+void pmm_init(uint32_t start_addr) {
+    pmm_start_addr = start_addr;
+    memset(bitmap, 0, sizeof(bitmap));
+}
 
 int find_first_page(void) {
     for (int i = 0; i < PAGES_COUNT / 32; i++) {
@@ -36,13 +43,12 @@ void* pmm_alloc_page(void) {
     int index = find_first_page();
 
     if (index == -1) {
-        kpanic("No free pages");
         return NULL;
     }
 
     bitmap_set(index);
 
-    return (void*)(index * PAGE_SIZE + PMM_START_ADDR);
+    return (void*)(index * PAGE_SIZE + pmm_start_addr);
 }
 
 void pmm_free_page(uint32_t page_addr) {
