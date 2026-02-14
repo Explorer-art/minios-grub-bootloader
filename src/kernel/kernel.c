@@ -7,12 +7,11 @@
 #include <kernel/drivers/keyboard.h>
 #include <kernel/drivers/ata.h>
 #include <kernel/utils/kprintf.h>
-#include <kernel/multiboot.h>
 
 extern void sctest_write(void);
 extern void sctest_read(void);
 
-void kmain(uint32_t magic, multiboot_t* multiboot_info) {
+void kmain(uint32_t magic) {
 	tty_init();
 	gdt_init();
 	idt_init();

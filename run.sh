@@ -1,1 +1,1 @@
-qemu-system-x86_64 -cdrom build/minios.iso
+qemu-system-i386 -kernel build/minios.bin
