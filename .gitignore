@@ -1,3 +1,4 @@
-build/
-isodir/
+**/build/
 *.o
+*.bin
+minios.img
