@@ -2,12 +2,12 @@
 
 ### Install tools
 ```
-apt install gcc nasm make xorriso mtools qemu-system
+sudo apt install gcc nasm make mtools qemu-system grub-pc
 ```
 
 ### Build
 ```
-make
+sudo make
 ```
 
 ### Run
@@ -16,5 +16,5 @@ make
 ```
 or
 ```
-qemu-system-i386 -kernel build/minios.bin
+qemu-system-x86_64 -drive format=raw,file=minios.img,if=ide,index=0
 ```

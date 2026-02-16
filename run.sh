@@ -1,1 +1,1 @@
-qemu-system-i386 -kernel build/minios.bin
+qemu-system-x86_64 -drive format=raw,file=minios.img,if=ide,index=0

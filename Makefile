@@ -1,67 +1,47 @@
-ASM=nasm
-CC=gcc
-LD=ld
-CFLAGS=-m32 -ffreestanding -fno-stack-protector -fno-builtin -Wall -Wextra -I src/include
-SRC_DIR?=src
-BUILD_DIR?=build
-
-OBJECTS= \
-$(BUILD_DIR)/boot/boot.o \
-$(BUILD_DIR)/kernel/cpu/gdt.o \
-$(BUILD_DIR)/kernel/cpu/gdt_flush.o \
-$(BUILD_DIR)/kernel/cpu/idt.o \
-$(BUILD_DIR)/kernel/cpu/idt_flush.o \
-$(BUILD_DIR)/kernel/cpu/irq.o \
-$(BUILD_DIR)/kernel/cpu/port.o \
-$(BUILD_DIR)/kernel/cpu/pic.o \
-$(BUILD_DIR)/kernel/drivers/ata.o \
-$(BUILD_DIR)/kernel/drivers/tty.o \
-$(BUILD_DIR)/kernel/drivers/keyboard.o \
-$(BUILD_DIR)/kernel/drivers/timer.o \
-$(BUILD_DIR)/kernel/mm/pmm.o \
-$(BUILD_DIR)/kernel/mm/vmm.o \
-$(BUILD_DIR)/kernel/mm/paging.o \
-$(BUILD_DIR)/kernel/utils/kprintf.o \
-$(BUILD_DIR)/kernel/utils/kpanic.o \
-$(BUILD_DIR)/kernel/sctest.o \
-$(BUILD_DIR)/kernel/kernel.o \
-$(BUILD_DIR)/kernel/syscall.o \
-$(BUILD_DIR)/libc/string.o \
-$(BUILD_DIR)/libc/memory.o \
+LD = ld
+CFLAGS= -m32 -ffreestanding -fno-stack-protector -fno-builtin -Wall -Wextra -I src/include 
+SRC_DIR ?= src
+BUILD_DIR ?= build
+KERNEL_BUILD_DIR ?= kernel/build
+LOOP := $(shell losetup -f)
 
 PHONY: all clean always
 
-all: clean always minios.iso
+all: clean always minios.img
 
-minios.iso: $(BUILD_DIR)/minios.iso
+minios.img:
+	make -C kernel
 
-$(BUILD_DIR)/minios.iso: minios.bin
-	mkdir -p isodir/boot
-	mkdir -p isodir/boot/grub
-	cp $(BUILD_DIR)/minios.bin isodir/boot/minios.bin
-	cp grub.cfg isodir/boot/grub/grub.cfg
-	grub-mkrescue -o $(BUILD_DIR)/minios.iso isodir
+	mkdir mnt
+	
+	# Create image
+	dd if=/dev/zero of=minios.img bs=1M count=64
+	
+	parted minios.img mklabel msdos
+	parted -a minimal minios.img mkpart primary fat32 1MiB 100%
 
-minios.bin: $(BUILD_DIR)/minios.bin
+	sudo losetup -fP minios.img
+	sudo mkfs.fat -F 32 -n MINIOS $(LOOP)p1
+	sudo mount -t vfat $(LOOP)p1 mnt
 
-$(BUILD_DIR)/minios.bin: $(OBJECTS)
-	$(LD) -m elf_i386 -T linker.ld -o $@ $(OBJECTS)
+	# Copy files
+	sudo mkdir -p mnt/boot/grub
+	sudo cp $(KERNEL_BUILD_DIR)/minios.bin mnt/boot/
+	sudo cp grub.cfg mnt/boot/grub/grub.cfg
 
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.s
-	$(ASM) -f elf32 $< -o $@
+	# Grub install
+	sudo grub-install --target=i386-pc --boot-directory=mnt/boot --recheck $(LOOP)
 
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	# Unmount
+	sudo umount mnt
+	sudo losetup -d $(LOOP)
+
+	sudo chmod 777 minios.img
 
 always:
-	mkdir -p $(BUILD_DIR)/boot
-	mkdir -p $(BUILD_DIR)/kernel
-	mkdir -p $(BUILD_DIR)/kernel/cpu
-	mkdir -p $(BUILD_DIR)/kernel/drivers
-	mkdir -p $(BUILD_DIR)/kernel/mm
-	mkdir -p $(BUILD_DIR)/kernel/utils
-	mkdir -p $(BUILD_DIR)/libc
+	mkdir -p $(BUILD_DIR)
 
 clean:
-	rm -f -R $(BUILD_DIR)/*
-	rm -f -R isodir
+	rm -f -r minios.img
+	rm -f -r $(BUILD_DIR)
+	rm -f -r mnt
