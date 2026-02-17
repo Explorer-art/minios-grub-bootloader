@@ -40,6 +40,13 @@ uint16_t date_to_fat(const uint8_t day, const uint8_t month, const uint8_t year)
     return ((fat_year & 0x7F) << 9) | ((month & 0x0F) << 5) | (day & 0x1F);
 }
 
+void str_to_upper(char* str) {
+    while (*str) {
+        *str = toupper(*str);
+        str++;
+    }
+}
+
 
 bool fat32_init(fat32_ctx_t *ctx, const uint32_t lba_start) {
     memset(ctx, 0, sizeof(fat32_ctx_t));
@@ -318,6 +325,8 @@ bool fat32_find_file(fat32_ctx_t *ctx, const uint32_t start_cluster, const char 
 
 bool fat32_open_file(fat32_ctx_t *ctx, fat32_file_t *file, const char *path) {
     memset(file, 0, sizeof(fat32_file_t));
+    str_to_upper(path);
+
     file->ctx = ctx;
 
     if (strcmp(path, "/") == 0) {
@@ -388,14 +397,14 @@ bool fat32_read_cluster(const fat32_ctx_t *ctx, const uint32_t cluster, void *bu
     return pata_pio_read_sectors(ATA_PRIMARY_IO, 0, cluster_to_lba(ctx, cluster), ctx->sectors_per_cluster, buffer);
 }
 
-bool fat32_read(fat32_file_t *file, void *buffer, const size_t size, size_t *bytes_read) {
+size_t fat32_read(fat32_file_t *file, void *buffer, const size_t size) {
     if (!file || !buffer || file->is_dir)
-        return false;
+        return 0;
 
     const fat32_ctx_t *ctx = file->ctx;
     uint8_t *buf = buffer;
     size_t remaining = size;
-    *bytes_read = 0;
+    size_t bytes_read = 0;
 
     while (remaining > 0) {
         if (file->file_offset >= file->size)
@@ -410,7 +419,7 @@ bool fat32_read(fat32_file_t *file, void *buffer, const size_t size, size_t *byt
 
         uint8_t cluster_data[ctx->cluster_size];
         if (!fat32_read_cluster(ctx, file->current_cluster, cluster_data)) {
-            return false;
+            return 0;
         }
 
         memcpy(buf, cluster_data + cluster_offset, to_read);
@@ -418,7 +427,7 @@ bool fat32_read(fat32_file_t *file, void *buffer, const size_t size, size_t *byt
         buf += to_read;
         file->file_offset += to_read;
         file->cluster_offset += to_read;
-        *bytes_read += to_read;
+        bytes_read += to_read;
         remaining -= to_read;
 
         if (file->cluster_offset >= ctx->cluster_size) {
@@ -429,7 +438,39 @@ bool fat32_read(fat32_file_t *file, void *buffer, const size_t size, size_t *byt
         }
     }
 
-    return true;
+    return bytes_read;
+}
+
+size_t fat32_read_line(fat32_file_t *file, void *buffer, const size_t size) {
+    if (!file || !buffer || file->is_dir)
+        return 0;
+
+    char* out = (char*)buffer;
+    size_t pos = 0;
+    char buf[512] = {0};
+    size_t bytes_read = 0;
+    size_t file_offset_before = file->file_offset;
+
+    while (pos < size - 1) {
+        bytes_read = fat32_read(file, buf, sizeof(buf));
+        if (bytes_read <= 0) {
+            break;
+        }
+
+        for (size_t i = 0; i < bytes_read && pos < size - 1; i++) {
+            char c = buf[i];
+            out[pos++] = c;
+            if (c == '\n') {
+                out[pos] = '\0';
+                fat32_seek(file, file_offset_before + pos);
+                return pos;
+            }
+        }
+    }
+
+    if (pos == 0) return 0;
+    out[pos] = '\0';
+    return pos;
 }
 
 bool fat32_seek(fat32_file_t *file, const uint32_t offset) {
@@ -502,6 +543,8 @@ bool fat32_close(fat32_file_t *file) {
 
 bool fat32_mkdir(fat32_ctx_t *ctx, const char *path) {
     char parent[256], dirname[13];
+
+    str_to_upper(path);
     split_path(path, parent, dirname);
 
     fat32_file_t parent_dir;
@@ -551,6 +594,8 @@ bool fat32_mkdir(fat32_ctx_t *ctx, const char *path) {
 
 bool fat32_create(fat32_ctx_t *ctx, const char *path) {
     char parent[256], filename[13];
+
+    str_to_upper(path);
     split_path(path, parent, filename);
 
     fat32_file_t parent_dir;
@@ -642,6 +687,8 @@ bool fat32_rewrite(fat32_file_t *file, const void *buffer, const size_t size) {
 
 bool fat32_remove(fat32_ctx_t *ctx, const char *path) {
     char parent[256], name[13];
+
+    str_to_upper(path);
     split_path(path, parent, name);
 
     fat32_file_t parent_dir;
@@ -677,6 +724,9 @@ bool fat32_remove(fat32_ctx_t *ctx, const char *path) {
 
 bool fat32_rmdir(fat32_ctx_t *ctx, const char *path) {
     fat32_file_t dir;
+
+    str_to_upper(path);
+
     if (!fat32_open_file(ctx, &dir, path) || !dir.is_dir)
         return false;
 
@@ -691,6 +741,8 @@ bool fat32_rmdir(fat32_ctx_t *ctx, const char *path) {
 
 bool fat32_update_file_entry(fat32_ctx_t *ctx, const char *path, const uint32_t start_cluster, const uint32_t size) {
     char parent[256], name[13];
+
+    str_to_upper(path);
     split_path(path, parent, name);
 
     fat32_file_t parent_dir;

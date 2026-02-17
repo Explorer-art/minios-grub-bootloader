@@ -1,4 +1,5 @@
 **/build/
+mnt/
 *.o
 *.bin
-minios.img
+*.img

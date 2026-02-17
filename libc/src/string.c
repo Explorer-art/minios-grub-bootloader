@@ -57,6 +57,17 @@ int strncmp(const char *s1, const char *s2, size_t n) {
     return 0;
 }
 
+int strcasecmp(const char *s1, const char *s2) {
+    while (*s1 && *s2) {
+        if (tolower((unsigned char)*s1) != tolower((unsigned char)*s2)) {
+            return (unsigned char)*s1 - (unsigned char)*s2;
+        }
+        s1++;
+        s2++;
+    }
+    return (unsigned char)*s1 - (unsigned char)*s2;
+}
+
 char* strchr(const char* str, int c) {
 	unsigned char ch = (unsigned char)c;
 
@@ -80,13 +91,19 @@ char* strrchr(const char* str, int c) {
 	return (char*)last;
 }
 
-int strcasecmp(const char *s1, const char *s2) {
-    while (*s1 && *s2) {
-        if (tolower((unsigned char)*s1) != tolower((unsigned char)*s2)) {
-            return (unsigned char)*s1 - (unsigned char)*s2;
-        }
-        s1++;
-        s2++;
+char* strtok(char* str, const char* delim) {
+    static char* next;
+    if (str) next = str;
+    if (!next) return NULL;
+
+    while (*next && strchr(delim, *next)) next++;
+    if (!*next) return NULL;
+
+    char* token = next;
+    while (*next && !strchr(delim, *next)) next++;
+    if (*next) {
+        *next = '\0';
+        next++;
     }
-    return (unsigned char)*s1 - (unsigned char)*s2;
+    return token;
 }

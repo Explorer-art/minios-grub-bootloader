@@ -131,10 +131,12 @@ bool set_fat_entry(const fat32_ctx_t *ctx, uint32_t cluster, uint32_t value);
 bool create_direntry(const fat32_ctx_t *ctx, uint32_t dir_cluster, const char *name, uint8_t attrs,
                      uint32_t first_cluster, uint32_t size);
 bool fat32_find_file(fat32_ctx_t *ctx, uint32_t start_cluster, const char *name, fat32_dir_entry_t *entry);
+
 bool fat32_open_file(fat32_ctx_t *ctx, fat32_file_t *file, const char *path);
 uint32_t fat32_next_cluster(const fat32_ctx_t *ctx, uint32_t cluster);
 bool fat32_read_cluster(const fat32_ctx_t *ctx, uint32_t cluster, void *buffer);
-bool fat32_read(fat32_file_t *file, void *buffer, size_t size, size_t *bytes_read);
+size_t fat32_read(fat32_file_t *file, void *buffer, size_t size);
+size_t fat32_read_line(fat32_file_t *file, void *buffer, const size_t size);
 bool fat32_seek(fat32_file_t *file, uint32_t offset);
 bool fat32_read_dir(fat32_file_t *dir, fat32_dir_entry_t *entry);
 bool fat32_close(fat32_file_t *file);

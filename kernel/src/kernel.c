@@ -8,6 +8,7 @@
 #include <drivers/tty.h>
 #include <drivers/keyboard.h>
 #include <utils/kprintf.h>
+#include <utils/config.h>
 
 extern void sctest_write(void);
 extern void sctest_read(void);
@@ -26,7 +27,7 @@ void kmain(uint32_t magic) {
 
     fat32_ctx_t fat32_ctx = {0};
 
-    if (!fat32_init(&fat32_ctx, 0)) {
+    if (!fat32_init(&fat32_ctx, 2048)) {
         kprintf("error: FAT32 init failed\n");
         goto pause;
     }
@@ -36,6 +37,19 @@ void kmain(uint32_t magic) {
     keyboard_init();
 
     __asm__ volatile ("sti");
+
+    fat32_file_t file;
+    char buffer[512];
+
+    fat32_open_file(&fat32_ctx, &file, "/etc/autoexec.cfg");
+
+    if (config_get_str(&file, "autoexec", buffer, sizeof(buffer))) {
+        kprintf("%s\n", buffer);
+    } else {
+        kprintf("Key not found\n");
+    }
+
+    fat32_close(&file);
 
 pause:
 	for(;;);
