@@ -12,7 +12,7 @@ sudo make
 
 ### Run
 ```
-./run.sh
+make run
 ```
 or
 ```

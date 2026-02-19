@@ -3,11 +3,9 @@
 #include <stddef.h>
 #include <memory.h>
 
-static uint32_t pmm_start_addr;
 static uint32_t bitmap[PAGES_COUNT / 32];
 
-void pmm_init(uint32_t start_addr) {
-    pmm_start_addr = start_addr;
+void pmm_init(void) {
     memset(bitmap, 0, sizeof(bitmap));
 }
 
@@ -48,10 +46,14 @@ void* pmm_alloc_page(void) {
 
     bitmap_set(index);
 
-    return (void*)(index * PAGE_SIZE + pmm_start_addr);
+    return (void*)(index * PAGE_SIZE + PMM_START_ADDR);
 }
 
 void pmm_free_page(uint32_t page_addr) {
-    uint32_t page_index = page_addr / PAGE_SIZE;
+    if (page_addr < PMM_START_ADDR) return;
+
+    uint32_t page_index = (page_addr - PMM_START_ADDR) / PAGE_SIZE;
+    if (page_index >= PAGES_COUNT) return;
+
     bitmap_clear(page_index);
 }

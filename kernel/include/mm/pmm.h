@@ -3,13 +3,12 @@
 
 #include <stdint.h>
 
+#define PMM_START_ADDR  0x400000
+#define PMM_END_ADDR    0xFFFFFFFF
 #define PAGE_SIZE 4096
-#define PMM_START_ADDR 0x400000
-#define PAGE_DIRECTORY_ENTRIES_COUNT 1024
-#define PAGE_TABLE_ENTRIES_COUNT 1024
-#define PAGES_COUNT PAGE_DIRECTORY_ENTRIES_COUNT * PAGE_TABLE_ENTRIES_COUNT
+#define PAGES_COUNT ((PMM_END_ADDR - PMM_START_ADDR) / PAGE_SIZE)
 
-void pmm_init(uint32_t start_addr);
+void pmm_init(void);
 void* pmm_alloc_page(void);
 void pmm_free_page(uint32_t page_addr);
 

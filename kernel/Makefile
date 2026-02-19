@@ -14,7 +14,9 @@ $(BUILD_DIR)/cpu/idt.o \
 $(BUILD_DIR)/cpu/idt_flush.o \
 $(BUILD_DIR)/cpu/irq.o \
 $(BUILD_DIR)/cpu/port.o \
+$(BUILD_DIR)/cpu/paging.o \
 $(BUILD_DIR)/cpu/pic.o \
+$(BUILD_DIR)/cpu/syscall.o \
 $(BUILD_DIR)/drivers/pata_pio.o \
 $(BUILD_DIR)/drivers/tty.o \
 $(BUILD_DIR)/drivers/keyboard.o \
@@ -22,14 +24,12 @@ $(BUILD_DIR)/drivers/timer.o \
 $(BUILD_DIR)/drivers/cmos.o \
 $(BUILD_DIR)/mm/pmm.o \
 $(BUILD_DIR)/mm/vmm.o \
-$(BUILD_DIR)/mm/paging.o \
 $(BUILD_DIR)/fs/fat32.o \
 $(BUILD_DIR)/utils/kprintf.o \
 $(BUILD_DIR)/utils/kmalloc.o \
 $(BUILD_DIR)/utils/kpanic.o \
 $(BUILD_DIR)/utils/config.o \
 $(BUILD_DIR)/kernel.o \
-$(BUILD_DIR)/syscall.o \
 
 LIBC_OBJECTS = \
 $(LIBC_DIR)/build/ctype.o \

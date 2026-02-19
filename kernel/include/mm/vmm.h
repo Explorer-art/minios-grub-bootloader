@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+#define PAGE_DIRECTORY_ENTRIES_COUNT 1024
+#define PAGE_TABLE_ENTRIES_COUNT 1024
+
 typedef struct {
 	uint32_t present : 1;
 	uint32_t read_write : 1;

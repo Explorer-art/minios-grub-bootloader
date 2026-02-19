@@ -2,7 +2,6 @@
 #include <memory.h>
 
 extern void gdt_flush(uint32_t addr);
-extern void tss_flush();
 
 GDT_Entry gdt_entries[GDT_ENTRIES];
 GDT_Ptr gdt_ptr;

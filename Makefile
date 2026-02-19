@@ -50,3 +50,6 @@ clean:
 	rm -f -r minios.img
 	rm -f -r $(BUILD_DIR)
 	rm -f -r mnt
+
+run:
+	qemu-system-x86_64 -drive format=raw,file=minios.img,if=ide,index=0

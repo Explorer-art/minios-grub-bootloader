@@ -8,6 +8,7 @@
 #include <drivers/tty.h>
 #include <drivers/keyboard.h>
 #include <utils/kprintf.h>
+#include <utils/kmalloc.h>
 #include <utils/config.h>
 
 extern void sctest_write(void);
@@ -19,7 +20,7 @@ void kmain(uint32_t magic) {
 	idt_init();
     pic_remap(0x20, 0x28);
 
-    pmm_init(PMM_START_ADDR);
+    pmm_init();
     vmm_init();
 
     Drives drives = {0};

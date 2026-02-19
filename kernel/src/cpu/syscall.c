@@ -1,4 +1,4 @@
-#include <syscall.h>
+#include <cpu/syscall.h>
 #include <drivers/tty.h>
 #include <drivers/keyboard.h>
 #include <utils/kprintf.h>
