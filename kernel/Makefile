@@ -25,6 +25,7 @@ $(BUILD_DIR)/drivers/cmos.o \
 $(BUILD_DIR)/mm/pmm.o \
 $(BUILD_DIR)/mm/vmm.o \
 $(BUILD_DIR)/fs/fat32.o \
+$(BUILD_DIR)/process.o \
 $(BUILD_DIR)/utils/kprintf.o \
 $(BUILD_DIR)/utils/kmalloc.o \
 $(BUILD_DIR)/utils/kpanic.o \

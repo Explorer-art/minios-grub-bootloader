@@ -14,7 +14,6 @@ Memory example:
 
 
 #include <utils/kmalloc.h>
-#include <utils/kprintf.h>
 #include <utils/kpanic.h>
 #include <memory.h>
 
@@ -52,9 +51,9 @@ void* alloc_block(size_t size) {
 
     if (info->size == 0) {
         info->size = size;
-    } else if (info->size < size + sizeof(kmalloc_block_info_t) + 2) {
-        info->size = size + sizeof(kmalloc_block_info_t) + 2;
-    } else if (info->size >= size + sizeof(kmalloc_block_info_t) + 2) {
+    } else if (info->size < size + sizeof(kmalloc_block_info_t) + KMALLOC_MIN_BLOCK_SIZE) {
+        info->size = size + sizeof(kmalloc_block_info_t) + KMALLOC_MIN_BLOCK_SIZE;
+    } else if (info->size >= size + sizeof(kmalloc_block_info_t) + KMALLOC_MIN_BLOCK_SIZE) {
         kmalloc_block_info_t* new_info = (kmalloc_block_info_t*)(uint8_t*)(info + info->size);
         new_info->size = info->size - size - sizeof(kmalloc_block_info_t);
         info->size = size;

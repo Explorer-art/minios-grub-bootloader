@@ -7,6 +7,8 @@
 
 #define MAX_PROCESSES 10
 #define KERNEL_STACK_SIZE 8192
+#define KERNEL_STACK_BASE 0x40000000
+#define USER_PROGRAM_BASE 0
 
 typedef enum {
     PROCESS_STATE_UNUSED,
@@ -40,10 +42,7 @@ typedef struct {
     spinlock_t lock;
 } __attribute__((packed)) process_table_t;
 
-extern void trapret(void);
-extern void forkret(void);
-
-process_t* process_create(char* name);
+process_t* process_create(void* program, uint32_t size);
 void process_terminate(uint8_t pid);
 
 #endif

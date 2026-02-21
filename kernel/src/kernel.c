@@ -4,9 +4,11 @@
 #include <mm/pmm.h>
 #include <mm/vmm.h>
 #include <drivers/pata_pio.h>
-#include <fs/fat32.h>
 #include <drivers/tty.h>
 #include <drivers/keyboard.h>
+#include <drivers/timer.h>
+#include <fs/fat32.h>
+#include <process.h>
 #include <utils/kprintf.h>
 #include <utils/kmalloc.h>
 #include <utils/config.h>
@@ -36,21 +38,22 @@ void kmain(uint32_t magic) {
     kprintf("Bytes per sector: %d\n", fat32_ctx.bytes_per_sector);
 
     keyboard_init();
+    timer_init(20);
 
     __asm__ volatile ("sti");
 
     fat32_file_t file;
     char buffer[512];
+    int bytes_read = 0;
 
-    fat32_open_file(&fat32_ctx, &file, "/etc/autoexec.cfg");
-
-    if (config_get_str(&file, "autoexec", buffer, sizeof(buffer))) {
-        kprintf("%s\n", buffer);
-    } else {
-        kprintf("Key not found\n");
+    if (!fat32_open_file(&fat32_ctx, &file, "/program.bin")) {
+        kpanic("Cannot open program.bin");
     }
 
+    bytes_read = fat32_read(&file, buffer, sizeof(buffer));
     fat32_close(&file);
+
+    process_create(buffer, bytes_read);
 
 pause:
 	for(;;);

@@ -3,12 +3,7 @@
 #include <cpu/port.h>
 #include <utils/kprintf.h>
 
-uint32_t tick = 0;
-
-void timer_handler(registers_t* regs) {
-	kprintf("Timer: %d\n", tick);
-	tick++;
-}
+void timer_handler(registers_t* regs) {}
 
 void timer_init(uint32_t frequency) {
 	irq_install_handler(0, timer_handler);

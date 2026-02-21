@@ -1,14 +1,10 @@
 bits 32
-
-global start
-extern main
+org 0
 
 section .text
 
 start:
-	cli
 	mov esp, stack_space
-	call main
 	hlt
 
 section .bss

@@ -28,6 +28,9 @@ phasma.bin: $(OBJECTS)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+asm: clean
+	$(ASM) -f bin boot.s -o program.bin
+
 clean:
 	rm -f *.o
 	rm -f *.bin

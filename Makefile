@@ -11,7 +11,7 @@ all: clean always minios.img
 
 minios.img:
 	make -C kernel
-	make -C userland/phasma
+	make -C userland/phasma asm
 
 	mkdir mnt
 	
@@ -32,7 +32,7 @@ minios.img:
 	sudo cp $(KERNEL_BUILD_DIR)/minios.bin mnt/boot/
 	sudo cp rootfs/boot/grub/grub.cfg mnt/boot/grub/
 	sudo cp rootfs/etc/autoexec.cfg mnt/etc/
-	sudo cp userland/phasma/phasma.bin mnt/
+	sudo cp userland/phasma/program.bin mnt/
 
 	# GRUB install
 	sudo grub-install --target=i386-pc --boot-directory=mnt/boot --recheck $(LOOP)
