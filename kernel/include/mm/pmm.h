@@ -13,7 +13,7 @@
 
 void pmm_init(void);
 void* pmm_alloc_page(void);
-void pmm_free_page(uint32_t page_addr);
+void pmm_free_page(void* page_addr);
 
 extern page_directory_t kpage_directory[PAGE_DIRECTORY_ENTRIES_COUNT];
 

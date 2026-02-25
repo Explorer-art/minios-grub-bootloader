@@ -1,12 +1,18 @@
 bits 32
-org 0
+org 0x80000000
 
 section .text
 
 start:
-	mov esp, stack_space
+	mov eax, 1
+	mov ebx, msg
+	mov ecx, 1
+	int 0x80
+
+	mov eax, 2
+	int 0x80
+
+	cli
 	hlt
 
-section .bss
-resb 8192
-stack_space:
+msg	db "Hello from userspace!", 0x0A, 0

@@ -1,8 +1,14 @@
 # Minios (GRUB)
 
 ### Install tools
+For build:
 ```
 sudo apt install gcc nasm make mtools qemu-system grub-pc
+```
+
+For debug (Bochs):
+```
+sudo apt install bochs bochs-x bochs-sdl bochsbios vgabios
 ```
 
 ### Build

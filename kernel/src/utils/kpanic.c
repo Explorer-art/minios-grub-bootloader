@@ -3,6 +3,5 @@
 
 void kpanic(const char* text) {
 	kprintf("Kernel panic!\nReason: %s\n", text);
-
-	for(;;);
+	for (;;);
 }

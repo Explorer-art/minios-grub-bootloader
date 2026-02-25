@@ -1,5 +1,5 @@
 #include <cpu/pic.h>
-#include <cpu/port.h>
+#include <x86.h>
 
 void pic_remap(uint8_t offset1, uint8_t offset2) {
 	outb(PIC1_COMMAND, 0x11);

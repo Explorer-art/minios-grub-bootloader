@@ -53,3 +53,6 @@ clean:
 
 run:
 	qemu-system-x86_64 -drive format=raw,file=minios.img,if=ide,index=0
+
+debug:
+	bochs -f bochs_config

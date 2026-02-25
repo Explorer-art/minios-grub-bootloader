@@ -8,13 +8,11 @@ LIBC_DIR ?= ../libc
 
 OBJECTS = \
 $(BUILD_DIR)/boot.o \
+$(BUILD_DIR)/x86.o \
 $(BUILD_DIR)/cpu/gdt.o \
-$(BUILD_DIR)/cpu/gdt_flush.o \
 $(BUILD_DIR)/cpu/idt.o \
-$(BUILD_DIR)/cpu/idt_flush.o \
+$(BUILD_DIR)/cpu/interrupts.o \
 $(BUILD_DIR)/cpu/irq.o \
-$(BUILD_DIR)/cpu/port.o \
-$(BUILD_DIR)/cpu/paging.o \
 $(BUILD_DIR)/cpu/pic.o \
 $(BUILD_DIR)/cpu/syscall.o \
 $(BUILD_DIR)/drivers/pata_pio.o \
@@ -26,6 +24,7 @@ $(BUILD_DIR)/mm/pmm.o \
 $(BUILD_DIR)/mm/vmm.o \
 $(BUILD_DIR)/fs/fat32.o \
 $(BUILD_DIR)/process.o \
+$(BUILD_DIR)/scheduler.o \
 $(BUILD_DIR)/utils/kprintf.o \
 $(BUILD_DIR)/utils/kmalloc.o \
 $(BUILD_DIR)/utils/kpanic.o \

@@ -19,7 +19,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” 
 
 
 #include <drivers/cmos.h>
-#include <cpu/port.h>
+#include <x86.h>
 #include <utils/kpanic.h>
 #include <stdint.h>
 

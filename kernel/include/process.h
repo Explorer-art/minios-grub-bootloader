@@ -6,9 +6,9 @@
 #include <spinlock.h>
 
 #define MAX_PROCESSES 10
-#define KERNEL_STACK_SIZE 8192
-#define KERNEL_STACK_BASE 0x40000000
-#define USER_PROGRAM_BASE 0
+#define KERNEL_STACK_SIZE 4096
+#define KERNEL_STACK_BASE 0x10000000
+#define USER_PROGRAM_BASE 0x80000000
 
 typedef enum {
     PROCESS_STATE_UNUSED,
@@ -22,9 +22,7 @@ typedef struct {
     uint32_t esi;
     uint32_t ebx;
     uint32_t ebp;
-    uint32_t esp; // Stack pointer
-    uint32_t eip; // Instruction pointer
-    uint32_t eflags; // EFLAGS register
+    uint32_t eip;
 } process_context_t;
 
 typedef struct {
@@ -33,6 +31,7 @@ typedef struct {
     process_state_t state;
     process_context_t* context;
     page_directory_t* page_directory;
+    uint32_t stack_pointer;
     uint32_t kernel_stack;
     uint32_t kernel_stack_size;
 } __attribute__((packed)) process_t;
@@ -43,6 +42,6 @@ typedef struct {
 } __attribute__((packed)) process_table_t;
 
 process_t* process_create(void* program, uint32_t size);
-void process_terminate(uint8_t pid);
+void process_terminate(process_t* proc);
 
 #endif

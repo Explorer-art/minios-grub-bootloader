@@ -9,12 +9,10 @@
 #include <drivers/timer.h>
 #include <fs/fat32.h>
 #include <process.h>
+#include <x86.h>
 #include <utils/kprintf.h>
 #include <utils/kmalloc.h>
 #include <utils/config.h>
-
-extern void sctest_write(void);
-extern void sctest_read(void);
 
 void kmain(uint32_t magic) {
 	tty_init();
@@ -35,15 +33,13 @@ void kmain(uint32_t magic) {
         goto pause;
     }
 
-    kprintf("Bytes per sector: %d\n", fat32_ctx.bytes_per_sector);
-
     keyboard_init();
     timer_init(20);
 
-    __asm__ volatile ("sti");
+    sti();
 
     fat32_file_t file;
-    char buffer[512];
+    uint8_t buffer[512];
     int bytes_read = 0;
 
     if (!fat32_open_file(&fat32_ctx, &file, "/program.bin")) {
@@ -53,8 +49,10 @@ void kmain(uint32_t magic) {
     bytes_read = fat32_read(&file, buffer, sizeof(buffer));
     fat32_close(&file);
 
-    process_create(buffer, bytes_read);
+    process_t* p = process_create(buffer, bytes_read);
+
+    schedule();
 
 pause:
-	for(;;);
+    for (;;);
 }

@@ -1,6 +1,6 @@
 #include <drivers/tty.h>
 #include <vga.h>
-#include <cpu/port.h>
+#include <x86.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>

@@ -1,10 +1,10 @@
 #include <mm/vmm.h>
 #include <mm/pmm.h>
+#include <x86.h>
 #include <utils/kprintf.h>
 #include <memory.h>
 
-extern void paging_enable(uint32_t page_directory_addr);
-extern void paging_disable(void);
+extern process_t* current_process;
 
 page_directory_t kpage_directory[PAGE_DIRECTORY_ENTRIES_COUNT] __attribute__((aligned(4096)));
 page_table_t kpage_table1[PAGE_TABLE_ENTRIES_COUNT] __attribute__((aligned(4096)));
@@ -61,11 +61,12 @@ void vmm_init(void) {
         kpage_table2[i].page_phys_addr = (i * PAGE_SIZE + 0x400000) >> 12;
     }
 
-    paging_enable(kpage_directory);
+    lcr3(kpage_directory);
+    paging_enable();
 }
 
 page_directory_t* vmm_create_user_page_directory(void) {
-    page_directory_t* pgdir = pmm_alloc_page();
+    page_directory_t* pgdir = pmm_intr_alloc_page();
 
     if (pgdir == NULL) return NULL;
 
@@ -84,29 +85,54 @@ page_directory_t* vmm_create_user_page_directory(void) {
         pgdir[i].write_through = 1;
     }
 
+    pgdir[0].present = 1;
+    pgdir[0].page_table_addr = (uint32_t)kpage_table1 >> 12;
+    pgdir[1].present = 1;
+    pgdir[1].page_table_addr = (uint32_t)kpage_table2 >> 12;
+
     return pgdir;
+}
+
+void* vmm_va2pa(page_directory_t* pgdir, uint8_t* va) {
+    page_table_t* ptable;
+    int pd = PDX(va);
+    int pt = PTX(va);
+
+    if (!pgdir[pd].present) return NULL;
+
+    ptable = (page_table_t*)((uint32_t)pgdir[pd].page_table_addr << 12);
+
+    if (!ptable[pt].present) return NULL;
+
+    uint32_t pa = (ptable[pt].page_phys_addr << 12) | ((uint32_t)va & 0xFFF);
+
+    return (void*)pa;
 }
 
 page_table_t* vmm_walk_pgdir(page_directory_t* pgdir, uint8_t* va) {
     page_table_t* ptable;
+    int pd = PDX(va);
+    int pt = PTX(va);
 
-    if (!pgdir[PDX(va)].present) {
-        ptable = pmm_alloc_page();
+    if (!pgdir[pd].present) {
+        ptable = pmm_intr_alloc_page();
 
         if (ptable == NULL) return NULL;
 
         memset(ptable, 0, PAGE_SIZE);
 
-        pgdir[PDX(va)].present = 1;
-        pgdir[PDX(va)].page_table_addr = (uint32_t)ptable >> 12;
+        pgdir[pd].present = 1;
+        pgdir[pd].page_table_addr = (uint32_t)ptable >> 12;
     } else {
-        ptable = (page_table_t*)((uint32_t)pgdir[PDX(va)].page_table_addr << 12);
+        ptable = (page_table_t*)((uint32_t)pgdir[pd].page_table_addr << 12);
     }
 
-    return &ptable[PTX(va)];
+    return &ptable[pt];
 }
 
 int vmm_mappage(page_directory_t* pgdir, uint8_t* va, uint8_t* pa, uint32_t size, uint8_t pte_p, uint8_t pte_w, uint8_t pte_u) {
+    kprintf("Mappage: VA=%x, PA=%x\n", va, pa);
+    
     uint8_t *a, *last;
 
     a = PGROUNDDOWN(va);
@@ -137,6 +163,26 @@ int vmm_mappage(page_directory_t* pgdir, uint8_t* va, uint8_t* pa, uint32_t size
     return 0;
 }
 
-void vmm_destroy_user_page_directory(page_directory_t* pdir) {
-    pmm_free_page(pdir);
+void vmm_switch_kernel_page_directory(void) {
+    lcr3(kpage_directory);
+}
+
+void vmm_switch_user_page_directory(page_directory_t* pgdir) {
+    lcr3(pgdir);
+}
+
+void vmm_destroy_user_page_directory(page_directory_t* pgdir) {
+    for (int i = 0; i < PAGE_DIRECTORY_ENTRIES_COUNT; i++) {
+        kprintf("%d\n", pgdir[i].present);
+        if (pgdir[i].present) {
+            page_table_t* ptable = (page_table_t*)(pgdir[i].page_table_addr >> 12);
+
+            for (int j = 0; j < PAGE_TABLE_ENTRIES_COUNT; j++) {
+                if (ptable[j].present) {
+                    pmm_free_page((ptable[j].page_phys_addr >> 12));
+                }
+            }
+        }
+    }
+    pmm_free_page(pgdir);
 }

@@ -1,5 +1,5 @@
 #include <cpu/irq.h>
-#include <cpu/port.h>
+#include <x86.h>
 #include <utils/kprintf.h>
 #include <utils/kpanic.h>
 

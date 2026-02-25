@@ -1,9 +1,12 @@
 #include <drivers/timer.h>
 #include <cpu/irq.h>
-#include <cpu/port.h>
+#include <x86.h>
+#include <scheduler.h>
 #include <utils/kprintf.h>
 
-void timer_handler(registers_t* regs) {}
+void timer_handler(registers_t* regs) {
+	schedule();
+}
 
 void timer_init(uint32_t frequency) {
 	irq_install_handler(0, timer_handler);

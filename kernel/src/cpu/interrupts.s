@@ -1,10 +1,3 @@
-global idt_flush
-
-idt_flush:
-	mov eax, [esp + 4]
-	lidt [eax]
-	ret
-
 %macro ISR_NOERRCODE 1
     global isr%1
     isr%1:

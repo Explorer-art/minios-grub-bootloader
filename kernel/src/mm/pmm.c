@@ -100,10 +100,11 @@ void* pmm_alloc_page(void) {
     return (void*)page_addr;
 }
 
-void pmm_free_page(uint32_t page_addr) {
-    if (page_addr < PMM_START_ADDR) return;
+void pmm_free_page(void* page_addr) {
+    kprintf("%x\n", page_addr);
+    if (((uint32_t)page_addr) < PMM_START_ADDR) return;
 
-    uint32_t page_index = (page_addr - PMM_START_ADDR) / PAGE_SIZE;
+    uint32_t page_index = (((uint32_t)page_addr) - PMM_START_ADDR) / PAGE_SIZE;
     if (page_index >= PAGES_COUNT) return;
 
     bitmap_clear(bitmap, page_index);

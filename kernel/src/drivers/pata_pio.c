@@ -1,5 +1,5 @@
 #include <drivers/pata_pio.h>
-#include <cpu/port.h>
+#include <x86.h>
 #include <utils/kprintf.h>
 
 static void pata_pio_delay(uint8_t delay) {

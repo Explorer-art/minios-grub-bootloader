@@ -1,15 +1,16 @@
 #include <process.h>
 #include <mm/vmm.h>
 #include <mm/pmm.h>
+#include <x86.h>
 #include <utils/kprintf.h>
 #include <memory.h>
 
-static process_table_t ptable;
-static uint32_t next_pid = 1;
+process_table_t ptable;
+uint32_t next_pid = 1;
 
 process_t* process_create(void* program, uint32_t size) {
     process_t* p;
-    char* sp;
+    char *sp_va, *sp_pa;
 
     for (p = ptable.process; p < &ptable.process[MAX_PROCESSES]; p++) {
         if (p->state == PROCESS_STATE_UNUSED) {
@@ -36,7 +37,8 @@ found:
         return NULL;
     }
 
-    sp = KERNEL_STACK_BASE + KERNEL_STACK_SIZE;
+    sp_va = KERNEL_STACK_BASE + KERNEL_STACK_SIZE;
+    sp_pa = p->kernel_stack + KERNEL_STACK_SIZE;
 
     if (vmm_mappage(p->page_directory, KERNEL_STACK_BASE, p->kernel_stack, KERNEL_STACK_SIZE, 1, 0, 0)) {
         pmm_free_page(p->kernel_stack);
@@ -64,14 +66,36 @@ found:
         return NULL;
     }
 
+    memcpy(code, program, size);
+
+    sp_va -= sizeof(process_context_t);
+    sp_pa -= sizeof(process_context_t);
+
+    p->context = (process_context_t*)sp_pa;
+    memset(p->context, 0, sizeof(process_context_t));
+    p->context->eip = 0x80000000;
+    p->stack_pointer = sp_va;
+
+    p->state = PROCESS_STATE_RUNNABLE;
+
     return p;
 }
 
-void process_terminate(uint8_t pid) {
-    for (int i = 0; i < MAX_PROCESSES; i++) {
-        if (ptable.process[i].pid == pid) {
-            ptable.process[i].state = PROCESS_STATE_UNUSED;
-            break;
+void process_terminate(process_t* proc) {
+    uint32_t pid = proc->pid;
+    process_t* p;
+    
+    for (p = ptable.process; p < &ptable.process[MAX_PROCESSES]; p++) {
+        if (ptable.process->pid == pid) {
+            cli();
+            goto found;
         }
     }
+
+    return;
+
+found:
+    p->state = PROCESS_STATE_UNUSED;
+    vmm_destroy_user_page_directory(p->page_directory);
+    sti();
 }
