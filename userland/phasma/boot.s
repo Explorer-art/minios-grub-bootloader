@@ -12,7 +12,4 @@ start:
 	mov eax, 2
 	int 0x80
 
-	cli
-	hlt
-
 msg	db "Hello from userspace!", 0x0A, 0

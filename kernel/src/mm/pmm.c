@@ -46,6 +46,8 @@ void* pmm_intr_alloc_page(void) {
 
     bitmap_set(intr_bitmap, index);
 
+    memset((index * PAGE_SIZE + PMM_INTR_START_ADDR), 0, PAGE_SIZE);
+
     return (void*)(index * PAGE_SIZE + PMM_INTR_START_ADDR);
 }
 
@@ -97,11 +99,12 @@ void* pmm_alloc_page(void) {
         kpanic("Page already allocated");
     }
 
+    memset(page_addr, 0, PAGE_SIZE);
+
     return (void*)page_addr;
 }
 
 void pmm_free_page(void* page_addr) {
-    kprintf("%x\n", page_addr);
     if (((uint32_t)page_addr) < PMM_START_ADDR) return;
 
     uint32_t page_index = (((uint32_t)page_addr) - PMM_START_ADDR) / PAGE_SIZE;
@@ -109,3 +112,4 @@ void pmm_free_page(void* page_addr) {
 
     bitmap_clear(bitmap, page_index);
 }
+

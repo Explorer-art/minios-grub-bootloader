@@ -5,6 +5,7 @@
 #include <process.h>
 #include <scheduler.h>
 #include <utils/kprintf.h>
+#include <stddef.h>
 
 extern process_t* current_process;
 extern page_directory_t* kpage_directory;
@@ -50,8 +51,9 @@ Parameters: none
 */
 
 uint8_t syscall_exit(registers_t* regs) {
-	vmm_switch_kernel_page_directory();
+	vmm_switch_kernel_page_directory(current_process->kernel_stack);
 	process_terminate(current_process);
+	current_process = NULL;
 	yield();
 	return 0;
 }

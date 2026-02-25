@@ -51,7 +51,7 @@ void kmain(uint32_t magic) {
 
     process_t* p = process_create(buffer, bytes_read);
 
-    schedule();
+    scheduler_init();
 
 pause:
     for (;;);

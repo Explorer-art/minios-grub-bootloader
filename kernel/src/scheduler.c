@@ -2,13 +2,19 @@
 #include <x86.h>
 #include <utils/kprintf.h>
 #include <stddef.h>
+#include <stdbool.h>
 
-process_context_t sheduler_context;
-process_context_t* sheduler_context_ptr = &sheduler_context;
-
+bool scheduler_running = false;
 process_t* current_process = NULL;
 
-void schedule(void) {    
+void scheduler_init(void) {
+	scheduler_running = !scheduler_running;
+	schedule();
+}
+
+void schedule(void) {
+	if (!scheduler_running) return false;
+	   
     for (int i = 0; i < MAX_PROCESSES; i++) {
         if (ptable.process[i].state == PROCESS_STATE_RUNNABLE) {
             process_t* prev = NULL;
@@ -20,13 +26,17 @@ void schedule(void) {
             vmm_switch_user_page_directory(current_process->page_directory);
 
             if (!prev) {
-                switch_context(&sheduler_context_ptr, current_process->stack_pointer);
+                switch_context(NULL, current_process->stack_pointer);
             }
         }
     }
+
+    scheduler_running = false;
+    kprintf("System halted!\n");
+    kprintf("Reason: There is not a single running process\n");
+    for (;;);
 }
 
 void yield(void) {
-    // vmm_switch_kernel_page_directory();
     schedule();
 }

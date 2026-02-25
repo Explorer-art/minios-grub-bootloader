@@ -58,7 +58,7 @@ void vmm_init(void) {
         kpage_table2[i].read_write = 1;
         kpage_table2[i].user_supervisor = 1;
         kpage_table2[i].write_through = 1;
-        kpage_table2[i].page_phys_addr = (i * PAGE_SIZE + 0x400000) >> 12;
+        kpage_table2[i].page_phys_addr = (i * PAGE_SIZE + 0x400000) >> 12; // 0x100000 - 0x7FFFFF - kernel space
     }
 
     lcr3(kpage_directory);
@@ -91,6 +91,25 @@ page_directory_t* vmm_create_user_page_directory(void) {
     pgdir[1].page_table_addr = (uint32_t)kpage_table2 >> 12;
 
     return pgdir;
+}
+
+void vmm_destroy_user_page_directory(page_directory_t* pgdir) {
+    for (int i = 0; i < PAGE_DIRECTORY_ENTRIES_COUNT; i++) {
+        if (pgdir[i].present) {
+            page_table_t* ptable = (page_table_t*)(pgdir[i].page_table_addr << 12);
+
+            for (int j = 0; j < PAGE_TABLE_ENTRIES_COUNT; j++) {
+                if (ptable[j].present) {
+                	uint8_t* pa = (ptable[j].page_phys_addr << 12);
+
+                	if (pa < PMM_START_ADDR) continue;
+                	
+                    pmm_free_page(pa);
+                }
+            }
+        }
+    }
+    pmm_free_page(pgdir);
 }
 
 void* vmm_va2pa(page_directory_t* pgdir, uint8_t* va) {
@@ -163,7 +182,8 @@ int vmm_mappage(page_directory_t* pgdir, uint8_t* va, uint8_t* pa, uint32_t size
     return 0;
 }
 
-void vmm_switch_kernel_page_directory(void) {
+void vmm_switch_kernel_page_directory(uint8_t* kstack) {
+	vmm_mappage(kpage_directory, KERNEL_STACK_BASE, kstack, KERNEL_STACK_SIZE, 1, 1, 1);
     lcr3(kpage_directory);
 }
 
@@ -171,18 +191,3 @@ void vmm_switch_user_page_directory(page_directory_t* pgdir) {
     lcr3(pgdir);
 }
 
-void vmm_destroy_user_page_directory(page_directory_t* pgdir) {
-    for (int i = 0; i < PAGE_DIRECTORY_ENTRIES_COUNT; i++) {
-        kprintf("%d\n", pgdir[i].present);
-        if (pgdir[i].present) {
-            page_table_t* ptable = (page_table_t*)(pgdir[i].page_table_addr >> 12);
-
-            for (int j = 0; j < PAGE_TABLE_ENTRIES_COUNT; j++) {
-                if (ptable[j].present) {
-                    pmm_free_page((ptable[j].page_phys_addr >> 12));
-                }
-            }
-        }
-    }
-    pmm_free_page(pgdir);
-}

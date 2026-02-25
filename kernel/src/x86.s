@@ -75,12 +75,17 @@ switch_context:
 	mov eax, [esp + 4]	; **old_context
 	mov edx, [esp + 8]	; *new_context
 
+	cmp eax, 0
+	je .not_old_context
+
 	push ebp
 	push ebx
 	push esi
 	push edi
 
 	mov [eax], esp
+	
+.not_old_context:
 	mov esp, edx
 
 	pop edi
